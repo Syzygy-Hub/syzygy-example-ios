@@ -1,99 +1,101 @@
-[![iOS](https://img.shields.io/badge/iOS-Swift-7F77DD?style=flat)](https://developer.apple.com/ios/) [![Swift](https://img.shields.io/badge/Swift-6.0-1D9E75?logo=swift&logoColor=white&style=flat)](https://swift.org) [![CI](https://img.shields.io/github/actions/workflow/status/Syzygy-Hub/syzygy-base-ios/ci.yml?label=ci&style=flat)](https://github.com/Syzygy-Hub/syzygy-base-ios/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-3.0.0-D85A30?style=flat)](https://github.com/Syzygy-Hub/syzygy-base-ios/releases) [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
+[![iOS](https://img.shields.io/badge/iOS-Swift-7F77DD?style=flat)](https://developer.apple.com/ios/) [![Swift](https://img.shields.io/badge/Swift-6.0-1D9E75?logo=swift&logoColor=white&style=flat)](https://swift.org) [![CI](https://img.shields.io/github/actions/workflow/status/Syzygy-Hub/syzygy-example-ios/ci.yml?label=ci&style=flat)](https://github.com/Syzygy-Hub/syzygy-example-ios/actions/workflows/ci.yml) [![Version](https://img.shields.io/badge/version-1.0.0-D85A30?style=flat)](https://github.com/Syzygy-Hub/syzygy-example-ios/releases) [![License](https://img.shields.io/badge/License-MIT-green?style=flat)](LICENSE)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Syzygy-Hub/.github/main/brand/assets/banners/syzygy-banner-dark-1200.png">
   <img src="https://raw.githubusercontent.com/Syzygy-Hub/.github/main/brand/assets/banners/syzygy-banner-light-1200.png" alt="Syzygy" width="600">
 </picture>
 
-# syzygy-base-ios
+# syzygy-example-ios
 
-A template iOS app that wires all 5 Syzygy layers via the Core DI Container.
+An iOS example app that composes all five Syzygy layers and Base through one Core DI Container, with a demo login.
 
-## About
+> This is an example application. It is **not published** to any package registry. Its only release artefact is a GitHub Release.
 
-syzygy-base-ios is a template iOS application that connects every Syzygy layer — Foundation, Core, Services, AI, and UI — through a single Core DI Container. All registrations live in `AppDependencies.swift`, so the wiring is visible in one place. Clone the repo, run `setup.sh`, and the project is ready to rename and extend with your own features.
+## Purpose
 
-## Platforms
+This example shows how to compose the Syzygy layers in a SwiftUI app: one DI container, one navigation stack and a demo login that lets a reader reach every screen without a backend. It is a reference for wiring Foundation, Core, Services, AI and UI together on iOS.
 
-| Platform | Dependency management | Status |
+## Layers demonstrated
+
+| Layer | Where it is shown | Status |
 |---|---|---|
-| iOS 16.0+ | SPM (Syzygy dependencies) | ✅ Supported |
+| Foundation | Features screen: `SyzygyID<T>.generate()` | Implemented |
+| UI | Features screen: `PrimaryButton`, `CardView`, `ProgressBar`. Theme: `SyzygyThemeProvider` | Implemented |
+| Core | Features screen: `ConfigRegistry.get(ConfigKey)`, `InMemoryFeatureFlagProvider.value(for:)`. Container: `AppDependencies.swift` | Implemented |
+| Services | Features screen: `UserDefaultsStorageProvider.set` / `getOrThrow`, `StorageServiceError`. Network and auth providers registered in `AppDependencies.swift` | Implemented |
+| AI | Features screen: `LLMProvider.complete`, `LLMRequest`, `LLMResponse`, `AIError`, with an offline provider in the app | Implemented |
+| Base | Composition root in `AppDependencies.swift` and navigation in `SyzygyExampleApp.swift` | Implemented |
+
+## Example screens
+
+Login, Home and Features share one `NavigationStack`.
+
+- **Login** signs in with the demo account (see Demo login). Wrong credentials show an error.
+- **Home** shows the signed-in user's email, with **Open Features** and **Log out**.
+- **Features** demonstrates each layer with public APIs only and no API keys. The AI demo uses the offline provider at `SyzygyExample/Features/Features/Data/OfflineLLMProvider.swift`.
+- **Log out** clears the session and returns to Login.
+
+## Demo login
+
+This example is not connected to a backend, so it signs in with an offline demo account by default.
+
+| Field | Value |
+|---|---|
+| Email | `demo@syzygy.example` |
+| Password | `demo-password` |
+
+These are demo values only, not secrets. The flag is `AppDependencies.useDemoLogin` in `SyzygyExample/App/AppDependencies.swift`. Its default is `true`, which selects the demo login.
+
+## Not included
+
+- A backend. Login uses the demo account only. Registration, token refresh and real API calls are not implemented.
+- A production AI provider. The AI demo answers from the offline provider in the app.
+- UI tests. This release runs only unit tests.
 
 ## Requirements
 
-- iOS 16.0+
-- Swift 6.0+
-- Xcode 16.0+
+- iOS 26.5 or later, the deployment target in `SyzygyExample.xcodeproj`
+- Swift 6.0 or later
+- Xcode 16 or later
 
-## Installation
+## How to run
 
-1. Clone the repo:
+1. Clone the repository:
    ```sh
-   git clone https://github.com/Syzygy-Hub/syzygy-base-ios.git
-   cd syzygy-base-ios
+   git clone https://github.com/Syzygy-Hub/syzygy-example-ios.git
+   cd syzygy-example-ios
    ```
-2. Run the setup script (PascalCase, no spaces):
+2. Preview the rename. This is a dry run and changes nothing:
    ```sh
-   ./setup.sh YourAppName
+   ./setup.sh
    ```
-   This renames bundle IDs, the app name, class names, and all references throughout the project. Commit all changes before running `setup.sh`.
-3. Open `SyzygyBase.xcodeproj` in Xcode.
-4. Add SPM dependencies via **Xcode → File → Add Package Dependencies**, then add each URL with version rule **Up to Next Major Version from 3.0.0**:
-   - https://github.com/Syzygy-Hub/syzygy-foundation-ios
-   - https://github.com/Syzygy-Hub/syzygy-core-ios
-   - https://github.com/Syzygy-Hub/syzygy-services-ios
-   - https://github.com/Syzygy-Hub/syzygy-ai-ios
-   - https://github.com/Syzygy-Hub/syzygy-ui-ios
+3. Apply the rename. It sets the app name to `Syzygy Example` and the identifier to `com.syzygyhub.example`. Commit your changes before this step:
+   ```sh
+   ./setup.sh --apply
+   ```
+4. Open `SyzygyExample.xcodeproj` in Xcode. The five Syzygy packages are already referenced at exactly 3.0.0.
+5. Run the `SyzygyExample` scheme on an iOS Simulator.
+6. Run the unit tests:
+   ```sh
+   xcodebuild -project SyzygyExample.xcodeproj -scheme SyzygyExample -destination 'platform=iOS Simulator,name=iPhone 18 Pro' -only-testing:SyzygyExampleTests test
+   ```
 
-## Architecture
+## Library compatibility
 
-**Depends on:** all 5 Syzygy layers via SPM.
+This release is built against Syzygy 3.0.0. The five layers are pinned to exactly 3.0.0 in `SyzygyExample.xcodeproj`. The `depends_on` constraints in `syzygy.yml` are `>=3.0.0`. The compatibility table is in [example-apps-standard.md](https://github.com/Syzygy-Hub/.github/blob/main/engineering/standards/example-apps-standard.md#4-compatibility-table).
 
-**DI wiring:** `AppDependencies.swift` uses `SyzygyCore.Container` (actor-isolated, singleton/transient/scoped lifetimes) to register Logger, URLSessionNetworkClient, SyzygyAuthProvider, KeychainStorageProvider, UserDefaultsStorageProvider, EventBus, Router, AppLifecycleTracker, InMemoryFeatureFlagProvider, ConfigRegistry, and DefaultScheduler.
+## Versioning and release
 
-**Entry point:** `SyzygyBaseApp.swift`
-
-## Contents
-
-```
-SyzygyBase/
-├── App/            Entry point, AppDependencies DI container, and app-level configuration
-├── Core/           Shared extensions and utilities used across all features
-├── DesignSystem/   Colours, typography tokens, and reusable UI components
-├── Features/       Feature modules (Auth, Home); add your own features here
-├── Navigation/     Router configuration and navigation helpers
-├── Network/        Networking shims and endpoint definitions
-├── Storage/        Keychain and UserDefaults storage wrappers
-├── Theme/          SyzygyThemeProvider setup and theme token definitions
-└── Utils/          General-purpose helpers (formatters, constants, etc.)
-```
-
-## Usage
-
-Resolve view models through `AppDependencies`:
-
-```swift
-// In SyzygyBaseApp.swift:
-SyzygyThemeProvider(theme: .default) { _ in
-    LoginView(viewModel: AppDependencies.makeLoginViewModel())
-}
-```
-
-`AppDependencies.makeLoginViewModel()` assembles the full dependency graph (repository → use case → view model) from the Core Container. `SyzygyThemeProvider` wraps the root view and injects theme tokens into the SwiftUI environment.
+This example versions independently of the Syzygy libraries. Releases are tagged with bare strict semver, for example `1.0.0`, with no `v` prefix. Each tag creates a GitHub Release from the matching CHANGELOG section. Nothing is published to a registry.
 
 ## Contributing
 
-Follow the [Syzygy engineering standards](https://github.com/Syzygy-Hub/.github/blob/main/docs/CONTRIBUTING.md). Open a branch, make your changes, and submit a pull request against `main`.
+Follow the [Syzygy contribution guide](https://github.com/Syzygy-Hub/.github/blob/main/CONTRIBUTING.md). Open a pull request against `main`.
 
-## Releases
+## Security
 
-1. Merge all changes to `main`.
-2. Update `syzygy.yml` — bump `version`.
-3. Update the Version badge in this file.
-4. Create and push a tag: `git tag 3.x.x && git push origin 3.x.x`.
-5. GitHub Actions publishes the release automatically.
-6. Verify the release appears at https://github.com/Syzygy-Hub/syzygy-base-ios/releases.
+Report security issues through the [Syzygy security policy](https://github.com/Syzygy-Hub/.github/blob/main/SECURITY.md).
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT. Copyright (c) 2026 Ayush Kumar Sethi. See [LICENSE](LICENSE).
