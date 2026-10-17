@@ -1,3 +1,6 @@
+# Caller workflow: CI for an iOS app (Xcode project). Copy to .github/workflows/ci.yml.
+# Input names are the planned vocabulary; they are documented in .github/workflows/README.md
+# of Syzygy-Hub/.github. Replace TODO values before use.
 name: CI
 
 on:
@@ -6,26 +9,15 @@ on:
     tags-ignore: ['*']
 
 jobs:
-  lint:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install SwiftLint
-        run: brew install swiftlint
-      - name: Lint
-        run: swiftlint --config .swiftlint.yml
-
-  test:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Resolve SPM dependencies
-        run: xcodebuild -resolvePackageDependencies -project SyzygyBase.xcodeproj -scheme SyzygyBase
-      - name: Test
-        run: |
-          xcodebuild test \
-            -project SyzygyBase.xcodeproj \
-            -scheme SyzygyBase \
-            -destination 'platform=iOS Simulator,OS=latest,name=iPhone 16' \
-            -skipPackagePluginValidation \
-            | xcpretty || true
+  ci:
+    uses: Syzygy-Hub/.github/.github/workflows/ios-ci.yml@main
+    with:
+      project_type: xcode
+      working_directory: '.'
+      runner: macos-latest
+      xcode_version: ''
+      xcode_project: 'SyzygyExample.xcodeproj'
+      scheme: 'SyzygyExample'
+      coverage: true
+      upload_artifacts: true
+      org_config_sha: 'main'

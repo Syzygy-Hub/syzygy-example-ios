@@ -1,13 +1,21 @@
-layer: base
-version: 3.0.0
-syzygy_foundation: "3.0.0"
-syzygy_core: "3.0.0"
-syzygy_services: "3.0.0"
-syzygy_ai: "3.0.0"
-syzygy_ui: "3.0.0"
-contracts:
-  - foundation
-  - core
-  - services
-  - ai
-  - ui
+name: syzygy-example-ios
+type: example
+platform: ios
+language: swift
+package_manager: spm
+license: MIT
+version: 1.0.0
+syzygy_foundation: ">=3.0.0"
+description: "Reference iOS app that composes the Syzygy layers with SwiftUI and a demo login"
+demonstrates: [foundation, ui, core, services, ai, base]
+depends_on:
+  - name: syzygy-foundation-ios
+    version_constraint: ">=3.0.0"
+  - name: syzygy-core-ios
+    version_constraint: ">=3.0.0"
+  - name: syzygy-services-ios
+    version_constraint: ">=3.0.0"
+  - name: syzygy-ai-ios
+    version_constraint: ">=3.0.0"
+  - name: syzygy-ui-ios
+    version_constraint: ">=3.0.0"
