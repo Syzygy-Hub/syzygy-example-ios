@@ -1,8 +1,20 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to `syzygy-example-ios` are documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [3.0.0] - 2026-10-18
+
+### Added
+- Release workflow `.github/workflows/release.yml` from the Hub's app release template. It fires on strict bare-semver tags and calls `app-release.yml@main`.
+- Library compatibility table in the README.
+- The demo login is documented as shipping in all build types, including release builds.
+
+### Changed
+- CI caller aligned with the Hub's iOS app CI template. Triggers are push-only with tags excluded, matching the libraries. Xcode version is left to the runner default because no installed Xcode path could be confirmed for the iOS 26.5 target.
+- README rewritten to the v3.0.0 facts. The one-time rename steps are removed.
+- `MARKETING_VERSION` set to 3.0.0. `CURRENT_PROJECT_VERSION` stays at 1.
 
 ## [1.0.0] - 2026-10-16
 
@@ -15,22 +27,3 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Syzygy packages pinned to exactly 3.0.0 (Foundation, Core, Services, AI, UI)
 - App renamed from SyzygyBase to Syzygy Example (bundle ID `com.syzygyhub.example`, project `SyzygyExample`)
 
-## [3.0.0] - 2026-10-06
-
-### Added
-- All 5 Syzygy layers declared as dependencies at v3.0.0 (Foundation, Core, Services, AI, UI)
-- Core DI Container wiring for Logger, NetworkClient, AuthProvider, StorageProvider, StateStore, EventBus, Router, Scheduler, FeatureFlagProvider, ConfigRegistry, AppLifecycleTracker
-- SyzygyThemeProvider wrapping the app root
-- Hub reusable CI workflow (ios-ci.yml@main)
-- SwiftLint configuration
-- syzygy.yml layer manifest
-
-### Changed
-- Bundle ID renamed from com.aks.Boilerplate to com.syzygyhub.base
-- App name renamed from Boilerplate to SyzygyBase
-- Version set to 3.0.0
-
-### Removed
-- Inline CI workflow (ios.yml) replaced by Hub reusable workflow
-- Local shadow copies of NetworkClient, APIError, KeychainManager, AppColors, AppFonts
-- Hand-rolled DI singleton replaced by Core DI Container
